@@ -11,34 +11,35 @@
 
 class ArmDynamics {
 private:
-    // Generalized coordinates
-    double theta1, theta2, theta3, phi;
-    double dtheta1, dtheta2, dtheta3, dphi;
-
     // Link lengths and center of mass distances
-    double l1, l2, l3, l4;
-    double lambda1, lambda2, lambda3, lambda4;
+    double l1M, l2M, l3M, l4M;
+    double comL1M, comL2M, comL3M, comL4M;
 
     // Masses
-    double m1, m2, m3, m4;
+    double m1Kg, m2Kg, m3Kg, m4Kg;
 
     // Gravity
-    double g;
-
-    // Matrices
-    Eigen::Matrix4d M;
-    Eigen::Matrix4d C;
-    Eigen::Vector4d G;
+    const double g = 9.81;
 
 public:
-    ArmDynamics(); // Constructor to initialize variables
+    ArmDynamics(std::vector<double> lengthsMeters, std::vector<double> comLengthsMeters, std::vector<double> massesKilograms); // Constructor to initialize variables
 
-    void computeDynamics(); // Populates M, C, G
-    Eigen::Matrix4d getMassMatrix() const { return M; }
-    Eigen::Matrix4d getCoriolisMatrix() const { return C; }
-    Eigen::Vector4d getGravityVector() const { return G; }
+    Eigen::Matrix4d M(Eigen::Vector4d positionsR);
+    Eigen::Matrix4d C(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS);
+    Eigen::Vector4d G(Eigen::Vector4d positionsR);
+
+    /* For simulations */
+    Eigen::Vector4d getAccelerationsRPSS(
+        Eigen::Vector4d torqueNm,
+        Eigen::Vector4d positionsR,
+        Eigen::Vector4d velocitiesRPS);
+
+    /* For controls */
+    Eigen::Vector4d getTorquesNm(
+        Eigen::Vector4d accelerationRPSS,
+        Eigen::Vector4d positionsR,
+        Eigen::Vector4d velocitiesRPS);
 };
-
 
 
 #endif //ARMDYNAMICS_H
