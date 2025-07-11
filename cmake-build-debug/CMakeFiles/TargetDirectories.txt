@@ -1,0 +1,3 @@
+C:/Repos/DriveArmsType/cmake-build-debug/CMakeFiles/DriveArmsType.dir
+C:/Repos/DriveArmsType/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Repos/DriveArmsType/cmake-build-debug/CMakeFiles/rebuild_cache.dir

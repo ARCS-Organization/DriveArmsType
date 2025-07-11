@@ -1,0 +1,9 @@
+# ninja log v6
+4	440	7738969112414948	build.ninja	3e712d60290b53e
+1019	1209	7738963263613833	DriveArmsType.exe	270958087f441a3a
+4	1017	7738963253467364	CMakeFiles/DriveArmsType.dir/main.cpp.obj	491b9723cdcf5349
+16	364	7738969112414948	build.ninja	3e712d60290b53e
+21	404	7738969113849418	CMakeFiles/DriveArmsType.dir/src/main.cpp.obj	9dd3e6c3c9ae35cd
+406	521	7738969117689810	DriveArmsType.exe	56eb25b5e445af1
+45	1791	7738970276149401	CMakeFiles/DriveArmsType.dir/src/main.cpp.obj	9dd3e6c3c9ae35cd
+1793	1913	7738970293635371	DriveArmsType.exe	56eb25b5e445af1
