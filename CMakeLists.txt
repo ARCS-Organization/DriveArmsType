@@ -5,4 +5,6 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(include)
 
-add_executable(DriveArmsType src/main.cpp)
+add_executable(DriveArmsType src/main.cpp
+        src/Arm/ArmDynamics.cpp
+        src/Arm/ArmDynamics.h)
