@@ -125,8 +125,13 @@ Eigen::Vector4d ArmDynamics::getAccelerationsRPSS(
         Eigen::Vector4d velocitiesRPS) {
     return
         ((M(positionsR).inverse()))
-            * (torqueNm - (C(positionsR, velocitiesRPS) * velocitiesRPS) - G(positionsR));
-};
+            * (
+            torqueNm
+            -
+            C(positionsR, velocitiesRPS) * velocitiesRPS
+            -
+            G(positionsR));
+}
 
 Eigen::Vector4d ArmDynamics::getTorquesNm(
         Eigen::Vector4d accelerationRPSS,

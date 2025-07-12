@@ -13,7 +13,7 @@ int main() {
     ArmDynamics AD = ArmDynamics(
         {1, 1, 1, 1},
         {1, 1, 1, 1},
-        {1, 1, 1, 1});
+        {5, 5, 5, 5});
 
     Eigen::Vector4d p(4);
     Eigen::Vector4d v(4);
@@ -25,15 +25,21 @@ int main() {
     t.setZero();
     a.setZero();
 
-    // std::cout << AD.M(p).inverse() * AD.M(p);
+    // std::cout << AD.G(p) << std::endl;
+    // std::cout << AD.C(p, v) * v << std::endl;
+    // std::cout << AD.M(p).inverse() << std::endl;
+    // std::cout << AD.M(p).inverse() * (t - (AD.C(p,v)*v) - AD.G(p)) << std::endl;
+    // std::cout << AD.getAccelerationsRPSS(t, p, v);
 
-    while (true) {
-        a == AD.getAccelerationsRPSS(t, p, v);
+    int i = 0;
+    while (i < 25) {
+        a = AD.getAccelerationsRPSS(AD.G(p), p, v);
         std::cout << "A: " << a << std::endl;
-        v = v + (0.01 * a);
+        v = v + (0.2 * a);
         std::cout << "V: " << v << std::endl;
-        p = p + (0.01 * v);
+        p = p + (0.2 * v);
         std::cout << "P: " << p << std::endl;
+        i++;
     }
 
     return 0;
