@@ -7,4 +7,6 @@ include_directories(include)
 
 add_executable(DriveArmsType src/main.cpp
         src/Arm/ArmDynamics.cpp
-        src/Arm/ArmDynamics.h)
+        src/Arm/ArmDynamics.h
+        src/LQR/LQRController.cpp
+        src/LQR/LQRController.h)

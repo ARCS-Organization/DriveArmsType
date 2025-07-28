@@ -63,6 +63,13 @@ build CMakeFiles/DriveArmsType.dir/src/Arm/ArmDynamics.cpp.obj: CXX_COMPILER__Dr
   OBJECT_DIR = CMakeFiles\DriveArmsType.dir
   OBJECT_FILE_DIR = CMakeFiles\DriveArmsType.dir\src\Arm
 
+build CMakeFiles/DriveArmsType.dir/src/LQR/LQRController.cpp.obj: CXX_COMPILER__DriveArmsType_unscanned_Debug C$:/Repos/DriveArmsType/src/LQR/LQRController.cpp || cmake_object_order_depends_target_DriveArmsType
+  DEP_FILE = CMakeFiles\DriveArmsType.dir\src\LQR\LQRController.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always
+  INCLUDES = -IC:/Repos/DriveArmsType/include
+  OBJECT_DIR = CMakeFiles\DriveArmsType.dir
+  OBJECT_FILE_DIR = CMakeFiles\DriveArmsType.dir\src\LQR
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target DriveArmsType
@@ -71,7 +78,7 @@ build CMakeFiles/DriveArmsType.dir/src/Arm/ArmDynamics.cpp.obj: CXX_COMPILER__Dr
 #############################################
 # Link the executable DriveArmsType.exe
 
-build DriveArmsType.exe: CXX_EXECUTABLE_LINKER__DriveArmsType_Debug CMakeFiles/DriveArmsType.dir/src/main.cpp.obj CMakeFiles/DriveArmsType.dir/src/Arm/ArmDynamics.cpp.obj
+build DriveArmsType.exe: CXX_EXECUTABLE_LINKER__DriveArmsType_Debug CMakeFiles/DriveArmsType.dir/src/main.cpp.obj CMakeFiles/DriveArmsType.dir/src/Arm/ArmDynamics.cpp.obj CMakeFiles/DriveArmsType.dir/src/LQR/LQRController.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\DriveArmsType.dir

@@ -32,11 +32,11 @@ int main() {
     //
 
 
-    std::cout << "B: " << std::endl;
-    std::cout << AD.discretizedB(p,
-        AD.A(p, v),
-        AD.discretizedA(p, v, 0.02),
-        0.02) << std::endl;
+    // std::cout << "B: " << std::endl;
+    // std::cout << AD.discretizedB(p,
+    //     AD.A(p, v),
+    //     AD.discretizedA(p, v, 0.02),
+    //     0.02) << std::endl;
     // std::cout << AD.discretizedB(p, AD.A(p,v), AD.discretizedA(p, v, 0.02), 0.02) << std::endl;
     //
     // std::cout << "C: " << std::endl;
@@ -53,16 +53,16 @@ int main() {
     // std::cout << AD.M(p).inverse() * (t - (AD.C(p,v)*v) - AD.G(p)) << std::endl;
     // std::cout << AD.getAccelerationsRPSS(t, p, v);
 
-    // int i = 0;
-    // while (i < 25) {
-    //     a = AD.getAccelerationsRPSS(AD.G(p), p, v);
-    //     std::cout << "A: " << a << std::endl;
-    //     v = v + (0.2 * a);
-    //     std::cout << "V: " << v << std::endl;
-    //     p = p + (0.2 * v);
-    //     std::cout << "P: " << p << std::endl;
-    //     i++;
-    // }
+    int i = 0;
+    while (i < 25) {
+        a = AD.getAccelerationsRPSS(AD.G(p), p, v);
+        std::cout << "A: " << a << std::endl;
+        v = v + (0.2 * a);
+        std::cout << "V: " << v << std::endl;
+        p = p + (0.2 * v);
+        std::cout << "P: " << p << std::endl;
+        i++;
+    }
 
     // std::cout << AD.M(p).exp() << std::endl;
 
