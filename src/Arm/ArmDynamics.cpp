@@ -3,7 +3,10 @@
 //
 
 #include "ArmDynamics.h"
+
+#include <iostream>
 #include <Eigen/Dense>
+#include <unsupported/Eigen/MatrixFunctions>
 
 ArmDynamics::ArmDynamics(std::vector<double> lengthsMeters, std::vector<double> comLengthsMeters, std::vector<double> massesKilograms) {
     l1M = lengthsMeters[0];
@@ -133,6 +136,75 @@ Eigen::Vector4d ArmDynamics::getAccelerationsRPSS(
             G(positionsR));
 }
 
+Eigen::Vector4d ArmDynamics::getNoTorquesAccelerationRPSS(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS) {
+    return
+        ((M(positionsR).inverse())) * (
+            -
+            C(positionsR, velocitiesRPS) * velocitiesRPS
+            -
+            G(positionsR));
+}
+
+Eigen::Matrix4d ArmDynamics::noTorquesJacobianPosition(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS) {
+    double epsilon = 0.001;
+
+    Eigen::Vector4d vec1 = Eigen::Vector4d();
+    Eigen::Vector4d newPos1 = positionsR;
+
+    Eigen::Vector4d vec2 = Eigen::Vector4d();
+    Eigen::Vector4d newPos2 = positionsR;
+
+    Eigen::Vector4d delta = Eigen::Vector4d();
+
+    Eigen::Matrix4d dE = Eigen::Matrix4d();
+
+    for(int i = 0; i < 4; i++) {
+        newPos1 = positionsR;
+        newPos1(i) = positionsR(i) - epsilon;
+        vec1 = getNoTorquesAccelerationRPSS(newPos1, velocitiesRPS);
+
+        newPos2 = positionsR;
+        newPos2(i) = positionsR(i) + epsilon;
+        vec2 = getNoTorquesAccelerationRPSS(newPos2, velocitiesRPS);
+
+        delta = (vec2 - vec1) / epsilon;
+
+        for(int j = 0; j < 4; j++) dE(j, i) = delta(i);
+    }
+
+    return dE;
+}
+
+Eigen::Matrix4d ArmDynamics::noTorquesJacobianVelocity(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS) {
+    double epsilon = 0.001;
+
+    Eigen::Vector4d vec1 = Eigen::Vector4d();
+    Eigen::Vector4d newVel1 = velocitiesRPS;
+
+    Eigen::Vector4d vec2 = Eigen::Vector4d();
+    Eigen::Vector4d newVel2 = velocitiesRPS;
+
+    Eigen::Vector4d delta = Eigen::Vector4d();
+
+    Eigen::Matrix4d dE = Eigen::Matrix4d();
+
+    for(int i = 0; i < 4; i++) {
+        newVel1 = velocitiesRPS;
+        newVel1(i) = velocitiesRPS(i) - epsilon;
+        vec1 = getNoTorquesAccelerationRPSS(positionsR, newVel1);
+
+        newVel2 = velocitiesRPS;
+        newVel2(i) = velocitiesRPS(i) + epsilon;
+        vec2 = getNoTorquesAccelerationRPSS(positionsR, newVel2);
+
+        delta = (vec2 - vec1) / epsilon;
+
+        for(int j = 0; j < 4; j++) dE(j, i) = delta(i);
+    }
+
+    return dE;
+}
+
 Eigen::Vector4d ArmDynamics::getTorquesNm(
         Eigen::Vector4d accelerationRPSS,
         Eigen::Vector4d positionsR,
@@ -141,4 +213,100 @@ Eigen::Vector4d ArmDynamics::getTorquesNm(
         (M(positionsR) * accelerationRPSS)
         + (C(positionsR, velocitiesRPS) * velocitiesRPS)
         + G(positionsR);
-};
+}
+
+Eigen::Vector<double, 8> ArmDynamics::x(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPSS) {
+    Eigen::Vector<double, 8> x = Eigen::VectorXd();
+    for(int i = 0; i < 4; i++) x(i) = positionsR(i);
+    for (int i = 0; i < 4; i++) x(i+4) = velocitiesRPSS(i);
+    return x;
+}
+
+Eigen::Matrix<double, 8, 8> ArmDynamics::A(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS) {
+    Eigen::Vector4d oldPositionR = positionsR;
+    Eigen::Vector4d oldVelocityRPSS = velocitiesRPS;
+
+    Eigen::Matrix<double, 8, 8> A = Eigen::Matrix<double, 8, 8>();
+    A.setZero();
+
+    for(int i = 0; i < 4; i++) A(i, 4+i) = 1;
+
+    double epsilon = 0.2;
+
+    Eigen::Vector4d vec1;
+    Eigen::Vector4d newPos1;
+    Eigen::Vector4d newVel1;
+
+    Eigen::Vector4d vec2;
+    Eigen::Vector4d newPos2;
+    Eigen::Vector4d newVel2;
+
+    Eigen::Vector4d delta;
+
+    for(int i = 0; i < 4; i++) {
+        newPos1 = positionsR;
+        newPos1(i) = positionsR(i) - epsilon;
+        vec1 = getNoTorquesAccelerationRPSS(newPos1, velocitiesRPS);
+
+        newPos2 = positionsR;
+        newPos2(i) = positionsR(i) + epsilon;
+        vec2 = getNoTorquesAccelerationRPSS(newPos2, velocitiesRPS);
+
+        delta = (vec2 - vec1) / epsilon;
+
+        for(int j = 0; j < 4; j++)  A(4+j, i) = delta(j);
+
+        newVel1 = velocitiesRPS;
+        newVel1(i) = velocitiesRPS(i) - epsilon;
+        vec1 = getNoTorquesAccelerationRPSS(positionsR, newVel1);
+
+        newVel2 = velocitiesRPS;
+        newVel2(i) = oldVelocityRPSS(i) + epsilon;
+        vec2 = getNoTorquesAccelerationRPSS(positionsR, newVel2);
+
+        delta = (vec2 - vec1) / epsilon;
+
+        for(int j = 0; j < 4; j++) A(4+j, 4+i) = delta(j);
+    }
+
+    return A;
+}
+
+Eigen::Matrix<double, 8, 8> ArmDynamics::B(Eigen::Vector4d positionsR) {
+    Eigen::Matrix<double, 8, 8> B = Eigen::Matrix<double, 8, 8>();
+    B.setZero();
+    Eigen::Matrix4d mInv = M(positionsR).inverse();
+    for(int i = 0; i < 4; i++) for(int j = 0; j < 4; j++) B(i+4, j) = mInv(i, j);
+    return B;
+}
+
+Eigen::Matrix<double, 4, 8> ArmDynamics::C() {
+    Eigen::Matrix<double, 4, 8> C = Eigen::Matrix<double, 4, 8>();
+    C.setZero();
+    for(int i = 0; i < 4; i++) C(i,i) = 1;
+    return C;
+}
+
+Eigen::Vector4d ArmDynamics::D() {
+    Eigen::Vector4d D = Eigen::Vector4d();
+    D.setZero();
+    return D;
+}
+
+Eigen::Matrix<double, 8, 8> ArmDynamics::discretizedA(Eigen::Vector4d positionsR, Eigen::Vector4d velocityRPSS, double dt) {
+    return (ArmDynamics::A(positionsR, velocityRPSS) * dt).exp();
+}
+
+Eigen::Matrix<double, 8, 8> ArmDynamics::discretizedB(Eigen::Vector4d positionsR, Eigen::Matrix<double, 8, 8> Ac, Eigen::Matrix<double, 8, 8> Ad, double dt) {
+    Eigen::Matrix<double, 8, 8> I = Eigen::Matrix<double, 8, 8>();
+    I.setIdentity();
+
+    std::cout << Ac << std::endl;
+    std::cout << Ac.determinant() << std::endl;
+    std::cout << Ac.inverse().determinant() << std::endl;
+    std::cout << Ad - I << std::endl;
+    std::cout << B(positionsR) << std::endl;
+
+
+    return Ac.inverse() * (Ad - I) * (B(positionsR));
+}

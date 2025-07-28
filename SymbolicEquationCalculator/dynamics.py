@@ -7,6 +7,12 @@ def sq(p):
 def shorten(str):
     return str.replace("Derivative", "d").replace("sin", "s").replace("cos", "c").replace("sec", "sc").replace("**","^")
 
+def MProduct(M, i, j, k):
+    return M[convert(i) - 1] * M[convert(j) - 1] * M[convert(k) - 1] 
+
+def convert(i):
+    return int(((( i - i % 10 ) / 10) - 1) * 4) + i % 10
+
 m1, m2, m3, m4, I = symbols("m1 m2 m3 m4 I")
 θ1, θ2, θ3, Φ, ψ = dynamicsymbols("θ1 θ2 θ3 Φ ψ")
 l1, l2, l3, l4 = symbols("l1 l2 l3 l4")
@@ -140,8 +146,110 @@ G4 = g * l4 * m4 * cos(θ3 + Φ) + g * m4 * λ4 * cos(θ3 + Φ)
 # Combine into gravity vector
 G = Matrix([G1, G2, G3, G4])
 
-print("M: " + shorten(str(M)) + "\n")
+# print("M: " + shorten(str(M)) + "\n")
 
-print("C: " + shorten(str(C)) + "\n")
+# print("C: " + shorten(str(C)) + "\n")
 
-print("G: " + shorten(str(G)))
+# print("G: " + shorten(str(G)))
+# i = 13
+# print(int((i % 10 + (( i - i % 10 ) / 10) * 4)))
+
+# for i in range(1,5):
+#     for j in range(1,5):
+#         print(convert(i * 10 + j))
+
+mdet = (
+    M[0] * (                       
+        MProduct(M, 22, 33, 44) + MProduct(M, 23, 34, 42) + MProduct(M, 24, 32, 43) - MProduct(M, 24, 33, 42) - MProduct(M, 23, 32, 44) - MProduct(M, 22, 34, 43))
+    - M[4] * (                     
+        MProduct(M, 12, 33, 44) + MProduct(M, 13, 34, 42) + MProduct(M, 14, 32, 43) - MProduct(M, 14, 33, 42) - MProduct(M, 13, 32, 44) - MProduct(M, 12, 34, 43))
+    - M[8] * (                     
+        MProduct(M, 12, 23, 44) + MProduct(M, 13, 24, 42) + MProduct(M, 14, 22, 43) - MProduct(M, 14, 23, 42) - MProduct(M, 13, 22, 44) - MProduct(M, 12, 24, 43))
+    - M[12] * (                    
+        MProduct(M, 12, 23, 34) + MProduct(M, 13, 24, 32) + MProduct(M, 14, 22, 33) - MProduct(M, 14, 23, 32) - MProduct(M, 13, 22, 34) - MProduct(M, 12, 24, 33))
+)
+
+m11 = (MProduct(M, 22, 33, 44) + MProduct(M, 23, 34, 42) + MProduct(M, 24, 32, 43)
+    - MProduct(M, 24, 33, 42) - MProduct(M, 23, 32, 44) - MProduct(M, 22, 34, 43))
+
+m12 = (MProduct(M, 21, 33, 44) + MProduct(M, 23, 34, 41) + MProduct(M, 24, 31, 43)
+    - MProduct(M, 24, 33, 41) - MProduct(M, 23, 31, 44) - MProduct(M, 21, 34, 43))
+
+m13 = (MProduct(M, 21, 32, 44) + MProduct(M, 22, 34, 41) + MProduct(M, 24, 31, 42)
+    - MProduct(M, 24, 32, 41) - MProduct(M, 22, 31, 44) - MProduct(M, 21, 34, 42))
+
+m14 = (MProduct(M, 21, 32, 43) + MProduct(M, 22, 33, 41) + MProduct(M, 23, 31, 42)
+    - MProduct(M, 23, 32, 41) - MProduct(M, 22, 31, 43) - MProduct(M, 21, 33, 42))
+
+m21 = (MProduct(M, 12, 33, 44) + MProduct(M, 13, 34, 42) + MProduct(M, 14, 32, 43)
+    - MProduct(M, 14, 33, 42) - MProduct(M, 13, 32, 44) - MProduct(M, 12, 34, 43))
+
+m22 = (MProduct(M, 11, 33, 44) + MProduct(M, 13, 34, 41) + MProduct(M, 14, 31, 43)
+    - MProduct(M, 14, 33, 41) - MProduct(M, 13, 31, 44) - MProduct(M, 11, 34, 43))
+
+m23 = (MProduct(M, 11, 32, 44) + MProduct(M, 12, 34, 41) + MProduct(M, 14, 31, 42)
+    - MProduct(M, 14, 32, 41) - MProduct(M, 12, 31, 44) - MProduct(M, 11, 34, 42))
+
+m24 = (MProduct(M, 11, 32, 43) + MProduct(M, 12, 33, 41) + MProduct(M, 13, 31, 42)
+    - MProduct(M, 13, 32, 41) - MProduct(M, 12, 31, 43) - MProduct(M, 11, 33, 42))
+
+m31 = (MProduct(M, 12, 23, 44) + MProduct(M, 13, 24, 42) + MProduct(M, 14, 22, 43)
+    - MProduct(M, 14, 23, 42) - MProduct(M, 13, 22, 44) - MProduct(M, 12, 24, 43))
+
+m32 = (MProduct(M, 11, 23, 44) + MProduct(M, 13, 24, 41) + MProduct(M, 14, 21, 43)
+    - MProduct(M, 14, 23, 41) - MProduct(M, 13, 21, 44) - MProduct(M, 11, 24, 43))
+
+m33 = (MProduct(M, 11, 22, 44) + MProduct(M, 12, 24, 41) + MProduct(M, 14, 21, 42)
+    - MProduct(M, 14, 22, 41) - MProduct(M, 12, 21, 44) - MProduct(M, 11, 24, 42))
+
+m34 = (MProduct(M, 11, 22, 43) + MProduct(M, 12, 23, 41) + MProduct(M, 13, 21, 42)
+    - MProduct(M, 13, 22, 41) - MProduct(M, 12, 21, 43) - MProduct(M, 11, 23, 42))
+
+m41 = (MProduct(M, 12, 23, 34) + MProduct(M, 13, 24, 32) + MProduct(M, 14, 22, 33)
+    - MProduct(M, 14, 23, 32) - MProduct(M, 13, 22, 34) - MProduct(M, 12, 24, 33))
+
+m42 = (MProduct(M, 11, 23, 34) + MProduct(M, 13, 24, 31) + MProduct(M, 14, 21, 33)
+    - MProduct(M, 14, 23, 31) - MProduct(M, 13, 21, 34) - MProduct(M, 11, 24, 33))
+
+m43 = (MProduct(M, 11, 22, 34) + MProduct(M, 12, 24, 31) + MProduct(M, 14, 21, 32)
+    - MProduct(M, 14, 22, 31) - MProduct(M, 12, 21, 34) - MProduct(M, 11, 24, 32))
+
+m44 = (MProduct(M, 11, 22, 33) + MProduct(M, 12, 23, 31) + MProduct(M, 13, 21, 32)
+    - MProduct(M, 13, 22, 31) - MProduct(M, 12, 21, 33) - MProduct(M, 11, 23, 32))
+
+mInv = Matrix([
+    [m11, m12, m13, m14],
+    [m21, m22, m23, m24],
+    [m31, m32, m33, m34],
+    [m41, m42, m43, m44]
+])
+
+mInv = (1/mdet) * mInv
+
+actualDq = dq = Matrix([
+    [diff(θ1, t)],
+    [diff(θ2, t)],
+    [diff(θ3, t)],
+    [diff(θ3, t)]
+])
+
+
+# E = simplify(mInv * (-G - (C* actualDq)))
+
+# dE = E.jacobian(q)
+
+# print(C * actualDq)
+
+
+# m12 = MProduct(M, 21, 33, 44) + MProduct(M, 23, 34, 41) + MProduct(M, 24, 31, 43) - MProduct(M, 24, 33, 41) - MProduct(M, 23, 31, 44) - MProduct(M, 21, 34, 43)
+# m13 = MProduct(M, 21, 32, 44) + MProduct(M, 22, 34, 41) + MProduct(M, 24, 32, 41) - MProduct(M, 24, 32, 41) - MProduct(M, 23, 31, 44) - MProduct(M, 21, 34, 43)
+
+print(mInv)
+
+# print(mdet)
+
+# print(E)
+
+# print("dE1: " + E.jacobian(q))
+
+# print("dE2: " + E.jacobian(dq))

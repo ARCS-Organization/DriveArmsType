@@ -34,11 +34,41 @@ public:
         Eigen::Vector4d positionsR,
         Eigen::Vector4d velocitiesRPS);
 
+    /* For State space */
+    Eigen::Vector4d getNoTorquesAccelerationRPSS(
+        Eigen::Vector4d positionsR,
+        Eigen::Vector4d velocitiesRPS
+    );
+
+    Eigen::Matrix4d noTorquesJacobianPosition(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS);
+
+    Eigen::Matrix4d noTorquesJacobianVelocity(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS);
+
     /* For controls */
     Eigen::Vector4d getTorquesNm(
         Eigen::Vector4d accelerationRPSS,
         Eigen::Vector4d positionsR,
         Eigen::Vector4d velocitiesRPS);
+
+    /*
+     * xHat = Ax + Bu
+     * y = Cu + Du
+     */
+    Eigen::Vector<double, 8> x(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS);
+
+    Eigen::Matrix<double, 8, 8> A(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS);
+
+    // TorqueNm = u
+    Eigen::Matrix<double, 8, 8> B(Eigen::Vector4d torqueNm);
+
+    // positions = u
+    Eigen::Matrix<double, 4, 8> C();
+
+    Eigen::Vector4d D();
+
+    Eigen::Matrix<double, 8, 8> discretizedA(Eigen::Vector4d positionsR, Eigen::Vector4d velocitiesRPS, double dt);
+
+    Eigen::Matrix<double, 8, 8> discretizedB(Eigen::Vector4d torqueNm, Eigen::Matrix<double, 8, 8> Ac, Eigen::Matrix<double, 8, 8> Ad, double dt);
 };
 
 
