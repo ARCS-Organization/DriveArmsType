@@ -1,9 +1,7 @@
 # ninja log v6
-6	321	7753731313047414	build.ninja	3e712d60290b53e
-29	1301	7753517237818030	CMakeFiles/DriveArmsType.dir/src/main.cpp.obj	9dd3e6c3c9ae35cd
+6	321	7755337788988390	build.ninja	3e712d60290b53e
+37	1301	7753746421634378	CMakeFiles/DriveArmsType.dir/src/main.cpp.obj	9dd3e6c3c9ae35cd
 8527	18689	7753541821605422	DriveArmsType.exe	79e885f53e8c4814
 4	1017	7738963253467364	CMakeFiles/DriveArmsType.dir/main.cpp.obj	491b9723cdcf5349
 29	8526	7753541736623148	CMakeFiles/DriveArmsType.dir/src/Arm/ArmDynamics.cpp.obj	6a07c8beb0da5c44
-46	24341	7752048319408231	CMakeFiles/DriveArmsType.dir/src/LQR/LQRController.cpp.obj	1ffcfe2cbb81c03c
-37	1301	7753746421634378	CMakeFiles/DriveArmsType.dir/src/main.cpp.obj	9dd3e6c3c9ae35cd
 42	24404	7753746421674740	CMakeFiles/DriveArmsType.dir/src/LQR/LQRController.cpp.obj	1ffcfe2cbb81c03c
